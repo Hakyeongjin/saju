@@ -1,0 +1,51 @@
+:root {
+  --ink: #24211c;
+  --ink-soft: #5a544a;
+  --paper: #f5f0e6;
+  --paper-2: #efe8d8;
+  --card: #fbf8f1;
+  --line: #ddd3bf;
+  --seal: #b23b32;
+  --gold: #b08a3e;
+
+  font-family: 'Pretendard', system-ui, 'Apple SD Gothic Neo', 'Malgun Gothic',
+    sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(176, 138, 62, 0.06), transparent 40%),
+    var(--paper);
+  min-height: 100svh;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
