@@ -38,8 +38,11 @@ function Column({ pillar, isDay }: { pillar: Pillar; isDay?: boolean }) {
 export default function PillarsTable({ result }: { result: SajuResult }) {
   const { hour, day, month, year } = result.pillars
   return (
-    <section className="card">
+    <section id="sec-pillars" className="card">
       <h2 className="section-title">사주팔자 <span className="hanja-sub">四柱八字</span></h2>
+      <p className="easy-note">
+        💡 쉽게 말하면 — 태어난 <b>연·월·일·시</b>를 각각 하늘 기운(천간)과 땅 기운(지지) 두 글자로 나타낸 <b>여덟 글자</b>예요. 내 운명의 기본 설계도랍니다.
+      </p>
       <div className="pillars">
         {hour ? (
           <Column pillar={hour} />

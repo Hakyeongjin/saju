@@ -35,7 +35,7 @@ function Group({ title, relations }: { title: string; relations: Relation[] }) {
 export default function HapChungView({ result }: { result: SajuResult }) {
   const hc = useMemo(() => analyzeHapChung(result, new Date()), [result])
   return (
-    <section className="card">
+    <section id="sec-hapchung" className="card">
       <h2 className="section-title">
         합·충 심화 <span className="hanja-sub">合 · 沖</span>
       </h2>

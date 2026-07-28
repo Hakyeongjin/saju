@@ -40,10 +40,13 @@ export default function InterpretationView({
   return (
     <>
       {/* 일간 성격 */}
-      <section className="card">
+      <section id="sec-ilgan" className="card">
         <h2 className="section-title">
           나의 기질 <span className="hanja-sub">日干</span>
         </h2>
+        <p className="easy-note">
+          💡 쉽게 말하면 — 여덟 글자 중 <b>‘나 자신’</b>을 뜻하는 글자 하나(일간)로 보는 기본 성격이에요.
+        </p>
         <div className="daymaster">
           <div
             className="daymaster-badge"
@@ -61,6 +64,7 @@ export default function InterpretationView({
             </div>
           </div>
         </div>
+        <p className="dm-overview">{dm.overview}</p>
         <div className="dm-detail">
           <p><b className="pos">강점</b> {dm.strength}</p>
           <p><b className="neg">주의</b> {dm.caution}</p>
@@ -68,10 +72,13 @@ export default function InterpretationView({
       </section>
 
       {/* 오행 분석 */}
-      <section className="card">
+      <section id="sec-ohaeng" className="card">
         <h2 className="section-title">
           오행 분포 <span className="hanja-sub">五行</span>
         </h2>
+        <p className="easy-note">
+          💡 쉽게 말하면 — 내 안에 <b>목·화·토·금·수</b> 다섯 기운이 얼마나 있는지 봐요. 많거나 없는 기운이 성향을 만들고, <b>신강/신약</b>은 내 기운이 센 편인지 약한 편인지를 뜻해요.
+        </p>
         <OhaengChart interp={interp} />
         <p className="balance-text">{interp.balanceText}</p>
         <div className="strength-box">

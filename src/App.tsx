@@ -1,15 +1,23 @@
 import { useState } from 'react'
 import './App.css'
 import InputForm from './components/InputForm'
+import CoupleForm from './components/CoupleForm'
 import PillarsTable from './components/PillarsTable'
 import InterpretationView from './components/Interpretation'
 import ShishenView from './components/ShishenView'
 import DaeunView from './components/DaeunView'
 import FortuneView from './components/FortuneView'
 import HapChungView from './components/HapChungView'
+import CareerView from './components/CareerView'
+import ThemeView from './components/ThemeView'
+import CompatView from './components/CompatView'
+import Toc from './components/Toc'
 import ShareModal from './components/ShareModal'
 import { computeSaju, type SajuInput, type SajuResult } from './lib/saju'
 import { interpret, type Interpretation } from './lib/interpret'
+import { analyzeCompat, type CompatResult } from './lib/compat'
+
+type Mode = 'single' | 'couple'
 
 interface Reading {
   result: SajuResult
@@ -17,16 +25,53 @@ interface Reading {
   name: string
 }
 
+interface CoupleReading {
+  a: SajuResult
+  b: SajuResult
+  compat: CompatResult
+  nameA: string
+  nameB: string
+}
+
+const SINGLE_TOC = [
+  { id: 'sec-pillars', label: '사주팔자' },
+  { id: 'sec-ilgan', label: '나의 기질' },
+  { id: 'sec-ohaeng', label: '오행 분포' },
+  { id: 'sec-shishen', label: '십신' },
+  { id: 'sec-daeun', label: '대운' },
+  { id: 'sec-fortune', label: '올해·오늘 운세' },
+  { id: 'sec-career', label: '직장운' },
+  { id: 'sec-theme', label: '테마별 운세' },
+  { id: 'sec-hapchung', label: '합·충' },
+]
+
 export default function App() {
+  const [mode, setMode] = useState<Mode>('single')
   const [reading, setReading] = useState<Reading | null>(null)
+  const [couple, setCouple] = useState<CoupleReading | null>(null)
   const [showShare, setShowShare] = useState(false)
 
-  function handleSubmit(input: SajuInput, name: string) {
+  function handleSingle(input: SajuInput, name: string) {
     const result = computeSaju(input)
-    const interp = interpret(result)
-    setReading({ result, interp, name })
+    setReading({ result, interp: interpret(result), name })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  function handleCouple(inputA: SajuInput, nameA: string, inputB: SajuInput, nameB: string) {
+    const a = computeSaju(inputA)
+    const ia = interpret(a)
+    const b = computeSaju(inputB)
+    const ib = interpret(b)
+    setCouple({ a, b, compat: analyzeCompat(a, ia, b, ib, nameA, nameB, new Date()), nameA, nameB })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function reset() {
+    setReading(null)
+    setCouple(null)
+  }
+
+  const hasResult = reading || couple
 
   return (
     <div className="app">
@@ -34,13 +79,32 @@ export default function App() {
         <h1 className="brand">
           <span className="brand-mark">命</span> 정통 사주
         </h1>
-        <p className="tagline">생년월일시로 풀어보는 나의 사주팔자와 오행</p>
+        <p className="tagline">생년월일시로 풀어보는 사주팔자 · 오행 · 궁합</p>
       </header>
 
       <main className="container">
-        {!reading ? (
-          <InputForm onSubmit={handleSubmit} />
-        ) : (
+        {!hasResult && (
+          <>
+            <div className="mode-toggle">
+              {(['single', 'couple'] as Mode[]).map((m) => (
+                <button
+                  key={m}
+                  className={mode === m ? 'mode-btn active' : 'mode-btn'}
+                  onClick={() => setMode(m)}
+                >
+                  {m === 'single' ? '내 사주' : '궁합'}
+                </button>
+              ))}
+            </div>
+            {mode === 'single' ? (
+              <InputForm onSubmit={handleSingle} />
+            ) : (
+              <CoupleForm onSubmit={handleCouple} />
+            )}
+          </>
+        )}
+
+        {reading && (
           <>
             <div className="summary-bar">
               <div>
@@ -51,23 +115,18 @@ export default function App() {
                 </div>
               </div>
               <div className="summary-btns">
-                <button className="reset-btn accent" onClick={() => setShowShare(true)}>
-                  저장·공유
-                </button>
-                <button className="reset-btn" onClick={() => setReading(null)}>다시 입력</button>
+                <button className="reset-btn accent" onClick={() => setShowShare(true)}>저장·공유</button>
+                <button className="reset-btn" onClick={reset}>다시 입력</button>
               </div>
             </div>
+            <Toc items={SINGLE_TOC} />
             <PillarsTable result={reading.result} />
             <InterpretationView interp={reading.interp} result={reading.result} />
             <ShishenView analysis={reading.interp.shishen} />
-            <DaeunView
-              daeun={reading.result.daeun}
-              strengthLabel={reading.interp.strength.label}
-            />
-            <FortuneView
-              dayMaster={reading.result.dayMaster}
-              strengthLabel={reading.interp.strength.label}
-            />
+            <DaeunView daeun={reading.result.daeun} strengthLabel={reading.interp.strength.label} />
+            <FortuneView dayMaster={reading.result.dayMaster} strengthLabel={reading.interp.strength.label} />
+            <CareerView result={reading.result} interp={reading.interp} />
+            <ThemeView result={reading.result} interp={reading.interp} />
             <HapChungView result={reading.result} />
             <p className="disclaimer">
               ※ 정통 명리학 이론에 따른 참고용 풀이입니다. 자시(子時) 경계 등 유파에 따라 해석이 달라질 수 있습니다.
@@ -80,6 +139,38 @@ export default function App() {
                 onClose={() => setShowShare(false)}
               />
             )}
+          </>
+        )}
+
+        {couple && (
+          <>
+            <div className="summary-bar">
+              <div>
+                <b>궁합 결과</b>
+                <div className="summary-dates">
+                  {(couple.nameA || '나')} ({couple.a.input.year}) · {(couple.nameB || '상대')} ({couple.b.input.year})
+                </div>
+              </div>
+              <button className="reset-btn" onClick={reset}>다시 입력</button>
+            </div>
+            <Toc
+              items={[
+                { id: 'sec-compat', label: '궁합 요약' },
+                ...couple.compat.sections.map((s, i) => ({ id: `sec-c-${i}`, label: s.title })),
+                { id: 'sec-compat-fortune', label: '올해·오늘 운세' },
+                { id: 'sec-compat-timeline', label: '시기별 흐름' },
+              ]}
+            />
+            <CompatView
+              compat={couple.compat}
+              a={couple.a}
+              b={couple.b}
+              nameA={couple.nameA}
+              nameB={couple.nameB}
+            />
+            <p className="disclaimer">
+              ※ 정통 명리학 이론에 따른 참고용 궁합 풀이입니다. 재미로 즐겨주세요 🙂
+            </p>
           </>
         )}
       </main>

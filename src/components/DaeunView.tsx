@@ -44,10 +44,13 @@ export default function DaeunView({
   const [sel, setSel] = useState<number>(currentIdx >= 0 ? currentIdx : 0)
 
   return (
-    <section className="card">
+    <section id="sec-daeun" className="card">
       <h2 className="section-title">
         대운 <span className="hanja-sub">大運 · 10년 운의 흐름</span>
       </h2>
+      <p className="easy-note">
+        💡 쉽게 말하면 — <b>10년마다 바뀌는 큰 운의 흐름</b>이에요. 카드를 누르면 그 시기 풀이가 나와요.
+      </p>
 
       <div className="daeun-meta">
         <span className={`daeun-dir dir-${daeun.direction}`}>{daeun.direction}</span>

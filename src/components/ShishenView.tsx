@@ -12,10 +12,13 @@ const GROUP_COLOR: Record<ShishenGroup, string> = {
 export default function ShishenView({ analysis }: { analysis: ShishenAnalysis }) {
   const max = Math.max(...analysis.groups.map((g) => g.count), 1)
   return (
-    <section className="card">
+    <section id="sec-shishen" className="card">
       <h2 className="section-title">
         십신 분석 <span className="hanja-sub">十神</span>
       </h2>
+      <p className="easy-note">
+        💡 쉽게 말하면 — 내 일간을 기준으로 나머지 글자들이 <b>재물·명예·표현·도움</b> 같은 어떤 역할을 하는지 나눈 거예요.
+      </p>
 
       <div className="ss-groups">
         {analysis.groups.map((g) => {

@@ -38,10 +38,13 @@ export default function FortuneView({
     [dayMaster, strengthLabel],
   )
   return (
-    <section className="card">
+    <section id="sec-fortune" className="card">
       <h2 className="section-title">
         올해·오늘 운세 <span className="hanja-sub">歲運 · 日辰</span>
       </h2>
+      <p className="easy-note">
+        💡 쉽게 말하면 — <b>올해와 오늘</b>의 기운이 내 사주와 만나 어떤 한 해·하루가 되는지 보는 거예요.
+      </p>
       <div className="fortune-grid">
         <FortuneCard p={fortune.year} />
         <FortuneCard p={fortune.today} />

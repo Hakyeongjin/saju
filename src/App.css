@@ -1098,3 +1098,416 @@
   border-top: 1px solid #ddd3bf;
   padding-top: 12px;
 }
+
+/* ── 쉬운 설명 노트 ── */
+.easy-note {
+  background: #f4efe1;
+  border-left: 3px solid var(--gold);
+  padding: 10px 13px;
+  border-radius: 0 8px 8px 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+}
+.easy-note b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ── 직장운 ── */
+.career-title {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: var(--seal);
+}
+.career-text {
+  line-height: 1.7;
+  font-size: 15px;
+}
+.career-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+.career-caution {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.career-flow {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--paper-2);
+  border-radius: 10px;
+}
+.career-flow-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.career-flow p {
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+/* ── 모드 토글 (내 사주 / 궁합) ── */
+.mode-toggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 5px;
+}
+.mode-btn {
+  flex: 1;
+  padding: 13px;
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  transition: background 0.15s, color 0.15s;
+}
+.mode-btn.active {
+  background: var(--seal);
+  color: #fff;
+}
+
+/* ── 궁합 입력 폼 ── */
+.couple-heading {
+  font-size: 16px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.couple-tag {
+  display: inline-grid;
+  place-items: center;
+  padding: 3px 11px;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.couple-tag.me {
+  background: #3f5b8c;
+}
+.couple-tag.you {
+  background: #a8443a;
+}
+.couple-divider {
+  text-align: center;
+  font-size: 24px;
+  margin: 4px 0;
+}
+.person-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ── 궁합 결과 ── */
+.compat-hero {
+  text-align: center;
+}
+.compat-people {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.compat-person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+}
+.compat-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+.compat-daybadge {
+  display: flex;
+  gap: 4px;
+}
+.compat-gz {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+.compat-dm {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.compat-heart {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.compat-score-wrap {
+  margin: 6px 0 14px;
+}
+.compat-grade {
+  font-size: 20px;
+  font-weight: 700;
+}
+.compat-score {
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--seal);
+  line-height: 1;
+}
+.compat-score em {
+  font-size: 18px;
+  font-style: normal;
+  color: var(--ink-soft);
+  margin-left: 2px;
+}
+.compat-summary {
+  line-height: 1.7;
+  font-size: 15px;
+}
+.compat-item {
+  padding: 14px 0;
+  border-top: 1px dashed var(--line);
+}
+.compat-item:first-of-type {
+  border-top: none;
+}
+.compat-item-title {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.compat-item p {
+  line-height: 1.7;
+  font-size: 14.5px;
+}
+
+/* ── 테마별 운세 ── */
+.theme-list {
+  display: flex;
+  flex-direction: column;
+}
+.theme-item {
+  padding: 16px 0;
+  border-top: 1px dashed var(--line);
+}
+.theme-item:first-child {
+  border-top: none;
+  padding-top: 4px;
+}
+.theme-title {
+  font-size: 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--seal);
+}
+.theme-icon {
+  font-size: 18px;
+}
+.theme-para {
+  line-height: 1.75;
+  font-size: 14.5px;
+  margin-bottom: 8px;
+}
+.theme-para:last-child {
+  margin-bottom: 0;
+}
+.theme-para b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ── 일간 상세 설명 ── */
+.dm-overview {
+  line-height: 1.8;
+  font-size: 15px;
+  margin-top: 16px;
+  color: var(--ink);
+}
+
+/* ── 목차 (TOC) ── */
+html {
+  scroll-behavior: smooth;
+}
+[id^='sec-'] {
+  scroll-margin-top: 14px;
+}
+.toc {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.toc-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 10px;
+}
+.toc-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.toc-link {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.toc-link:hover,
+.toc-link:active {
+  background: var(--seal);
+  color: #fff;
+  border-color: var(--seal);
+}
+
+/* ── 궁합 시기별 흐름 ── */
+.cyear-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cyear {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+.cyear.now {
+  border-color: var(--seal);
+  box-shadow: 0 0 0 2px rgba(178, 59, 50, 0.15);
+}
+.cyear-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+  flex-wrap: wrap;
+}
+.cyear-gzbadge {
+  flex-shrink: 0;
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+.cyear-headtext {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.cyear-year {
+  font-weight: 700;
+  font-size: 15px;
+}
+.cyear-gz {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.ctag {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 11px;
+  border-radius: 20px;
+}
+.ctag-좋음 {
+  background: #2e7d46;
+}
+.ctag-무난 {
+  background: #8a8172;
+}
+.ctag-주의 {
+  background: #c9772e;
+}
+.cyear-note {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+/* ── 근거(이유) ── */
+.basis {
+  font-size: 12px;
+  color: var(--ink-soft);
+  background: var(--paper-2);
+  border-radius: 8px;
+  padding: 7px 11px;
+  margin-top: 10px;
+  line-height: 1.55;
+}
+
+/* ── 커플 올해·오늘 운세 ── */
+.cfortune {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cfortune-item {
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+.cfortune-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.cfortune-gz {
+  flex-shrink: 0;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 11px;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+.cfortune-headtext {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cfortune-label {
+  font-weight: 700;
+  font-size: 15px;
+}
+.cfortune-sub {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.cfortune-comment {
+  line-height: 1.75;
+  font-size: 14px;
+  margin-top: 8px;
+}
