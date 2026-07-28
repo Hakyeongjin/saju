@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import InputForm from './components/InputForm'
 import CoupleForm from './components/CoupleForm'
@@ -13,6 +13,7 @@ import ThemeView from './components/ThemeView'
 import CompatView from './components/CompatView'
 import Toc from './components/Toc'
 import ShareModal from './components/ShareModal'
+import LegalView from './components/LegalPages'
 import { computeSaju, type SajuInput, type SajuResult } from './lib/saju'
 import { interpret, type Interpretation } from './lib/interpret'
 import { analyzeCompat, type CompatResult, type RelType } from './lib/compat'
@@ -52,6 +53,19 @@ export default function App() {
   const [couple, setCouple] = useState<CoupleReading | null>(null)
   const [showShare, setShowShare] = useState(false)
   const [formError, setFormError] = useState('')
+  const [route, setRoute] = useState(() => window.location.hash.replace(/^#/, ''))
+
+  useEffect(() => {
+    const onHash = () => {
+      setRoute(window.location.hash.replace(/^#/, ''))
+      window.scrollTo({ top: 0 })
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
+  const legalPage: 'privacy' | 'terms' | null =
+    route === 'privacy' || route === 'terms' ? route : null
 
   function handleSingle(input: SajuInput, name: string) {
     try {
@@ -108,6 +122,10 @@ export default function App() {
       </header>
 
       <main className="container">
+        {legalPage ? (
+          <LegalView page={legalPage} onBack={() => { window.location.hash = '' }} />
+        ) : (
+          <>
         {!hasResult && (
           <>
             <div className="mode-toggle">
@@ -214,9 +232,19 @@ export default function App() {
             </nav>
           </>
         )}
+          </>
+        )}
       </main>
 
-      <footer className="footer">四柱八字 · 정통 사주</footer>
+      <footer className="footer">
+        <div className="footer-brand">四柱八字 · 정통 사주</div>
+        <nav className="footer-links">
+          <a href="#privacy">개인정보처리방침</a>
+          <span aria-hidden="true">·</span>
+          <a href="#terms">이용약관</a>
+        </nav>
+        <p className="footer-note">본 서비스의 사주·운세·궁합 결과는 재미·참고용입니다.</p>
+      </footer>
     </div>
   )
 }
