@@ -109,6 +109,40 @@ function careerLabel(c: Record<ShishenGroup, number>): string {
   return label
 }
 
+export type RelType = '연인' | '친구' | '동료'
+
+const REL_GRADES: Record<RelType, [string, string, string, string]> = {
+  연인: ['천생연분 💞', '좋은 궁합 💛', '무난한 궁합 🙂', '노력이 필요한 궁합 🌱'],
+  친구: ['찰떡친구 💛', '좋은 친구 사이 😊', '무난한 사이 🙂', '서로 노력이 필요한 사이 🌱'],
+  동료: ['환상의 팀 🤝', '좋은 파트너 👍', '무난한 협업 🙂', '맞춰갈 게 많은 사이 🌱'],
+}
+
+// 관계 유형에 맞게 연애 중심 표현을 치환
+function relabel(s: string, type: RelType): string {
+  if (type === '연인') return s
+  const pairs: [string, string][] =
+    type === '친구'
+      ? [
+          ['배우자 자리', '단짝 자리'],
+          ['배우자·짝', '단짝'],
+          ['함께 살 때', '함께 지낼 때'],
+          ['서로에게 끌리고 편안함을 느낍니다', '죽이 잘 맞고 편안함을 느낍니다'],
+          [' 연인이면서 친구 같은 편안함도 있는 관계예요.', ''],
+          ['커플', '사이'],
+        ]
+      : [
+          ['배우자 자리', '호흡 맞는 자리'],
+          ['배우자·짝', '파트너'],
+          ['함께 살 때', '함께 일할 때'],
+          ['서로에게 끌리고 편안함을 느낍니다', '죽이 잘 맞고 편안함을 느낍니다'],
+          [' 연인이면서 친구 같은 편안함도 있는 관계예요.', ''],
+          ['커플', '두 사람'],
+        ]
+  let out = s
+  for (const [x, y] of pairs) out = out.split(x).join(y)
+  return out
+}
+
 export function analyzeCompat(
   a: SajuResult,
   ia: Interpretation,
@@ -117,6 +151,7 @@ export function analyzeCompat(
   nameA: string,
   nameB: string,
   now: Date,
+  relationType: RelType,
 ): CompatResult {
   const clean = (s: string) => s.replace(/[<>&]/g, '').slice(0, 20)
   const na = clean(nameA) || '나'
@@ -448,19 +483,23 @@ export function analyzeCompat(
   const fortune = { year: mkPeriod('올해', seunGzNow, '는'), today: mkPeriod('오늘', dayGzNow, '은') }
 
   score = Math.max(42, Math.min(98, score))
-  let grade: string
-  if (score >= 85) grade = '천생연분 💞'
-  else if (score >= 72) grade = '좋은 궁합 💛'
-  else if (score >= 58) grade = '무난한 궁합 🙂'
-  else grade = '노력이 필요한 궁합 🌱'
+  const gset = REL_GRADES[relationType]
+  const grade = score >= 85 ? gset[0] : score >= 72 ? gset[1] : score >= 58 ? gset[2] : gset[3]
 
   const summary = `${na}와 ${nb}의 궁합은 <b>${grade}</b> (${score}점)이에요. ${
     score >= 72
-      ? '서로에게 좋은 기운을 주고받는 인연이니, 아래 분야별 풀이를 참고해 관계를 더 예쁘게 가꿔보세요.'
+      ? '서로에게 좋은 기운을 주고받는 사이이니, 아래 분야별 풀이를 참고해 관계를 더 좋게 가꿔보세요.'
       : score >= 58
         ? '큰 문제 없이 무난한 사이예요. 서로의 다른 점을 이해하면 훨씬 더 깊어질 수 있습니다.'
         : '다른 점이 많은 만큼, 서로를 있는 그대로 존중하는 노력이 이 관계를 단단하게 만들어요.'
   }`
 
-  return { score, grade, summary, sections, fortune, timeline }
+  const relSections = sections.map((sec) => ({
+    ...sec,
+    title: relabel(sec.title, relationType),
+    paras: sec.paras.map((p) => relabel(p, relationType)),
+    example: relabel(sec.example, relationType),
+  }))
+
+  return { score, grade, summary, sections: relSections, fortune, timeline }
 }

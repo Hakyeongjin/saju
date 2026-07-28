@@ -15,7 +15,7 @@ import Toc from './components/Toc'
 import ShareModal from './components/ShareModal'
 import { computeSaju, type SajuInput, type SajuResult } from './lib/saju'
 import { interpret, type Interpretation } from './lib/interpret'
-import { analyzeCompat, type CompatResult } from './lib/compat'
+import { analyzeCompat, type CompatResult, type RelType } from './lib/compat'
 
 type Mode = 'single' | 'couple'
 
@@ -31,6 +31,7 @@ interface CoupleReading {
   compat: CompatResult
   nameA: string
   nameB: string
+  relationType: RelType
 }
 
 const SINGLE_TOC = [
@@ -63,13 +64,23 @@ export default function App() {
     }
   }
 
-  function handleCouple(inputA: SajuInput, nameA: string, inputB: SajuInput, nameB: string) {
+  function handleCouple(
+    inputA: SajuInput,
+    nameA: string,
+    inputB: SajuInput,
+    nameB: string,
+    relationType: RelType,
+  ) {
     try {
       const a = computeSaju(inputA)
       const ia = interpret(a)
       const b = computeSaju(inputB)
       const ib = interpret(b)
-      setCouple({ a, b, compat: analyzeCompat(a, ia, b, ib, nameA, nameB, new Date()), nameA, nameB })
+      setCouple({
+        a, b,
+        compat: analyzeCompat(a, ia, b, ib, nameA, nameB, new Date(), relationType),
+        nameA, nameB, relationType,
+      })
       setFormError('')
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch {
@@ -189,6 +200,7 @@ export default function App() {
               b={couple.b}
               nameA={couple.nameA}
               nameB={couple.nameB}
+              relationType={couple.relationType}
             />
             <p className="disclaimer">
               ※ 정통 명리학 이론에 따른 참고용 궁합 풀이입니다. 재미로 즐겨주세요 🙂

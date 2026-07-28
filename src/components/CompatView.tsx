@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ELEMENT_COLOR } from '../lib/ganji'
-import type { CompatResult } from '../lib/compat'
+import type { CompatResult, RelType } from '../lib/compat'
 import type { SajuResult } from '../lib/saju'
 
 function PersonBadge({ result, name, tagClass, tag }: { result: SajuResult; name: string; tagClass: string; tag: string }) {
@@ -64,19 +64,21 @@ export default function CompatView({
   b,
   nameA,
   nameB,
+  relationType,
 }: {
   compat: CompatResult
   a: SajuResult
   b: SajuResult
   nameA: string
   nameB: string
+  relationType: RelType
 }) {
   return (
     <>
       <section id="sec-compat" className="card compat-hero">
         <div className="compat-people">
           <PersonBadge result={a} name={nameA} tagClass="me" tag="나" />
-          <div className="compat-heart">💞</div>
+          <div className="compat-heart">{relationType === '연인' ? '💞' : '🤝'}</div>
           <PersonBadge result={b} name={nameB} tagClass="you" tag="상대" />
         </div>
         <div className="compat-score-wrap">
