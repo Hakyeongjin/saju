@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { ELEMENT_COLOR } from '../lib/ganji'
 import type { CompatResult } from '../lib/compat'
 import type { SajuResult } from '../lib/saju'
@@ -14,6 +15,45 @@ function PersonBadge({ result, name, tagClass, tag }: { result: SajuResult; name
         <span className="compat-gz" style={{ background: ELEMENT_COLOR[ji.element] }}>{ji.hanja}</span>
       </div>
       <span className="compat-dm">{dm.hangul}{dm.element} 일간</span>
+    </div>
+  )
+}
+
+function DecadeTimeline({ timeline }: { timeline: CompatResult['timeline'] }) {
+  const nowIdx = timeline.findIndex((d) => d.isNow)
+  const [open, setOpen] = useState<number>(nowIdx >= 0 ? nowIdx : 0)
+  return (
+    <div className="cdecade-list">
+      {timeline.map((dc, i) => {
+        const isOpen = open === i
+        return (
+          <div className={dc.isNow ? 'cdecade now' : 'cdecade'} key={dc.startYear}>
+            <button className="cdecade-head" onClick={() => setOpen(isOpen ? -1 : i)}>
+              <div className="cdecade-headtext">
+                <span className="cdecade-range">{dc.startYear}~{dc.endYear}{dc.isNow ? ' · 현재' : ''}</span>
+                <span className="cdecade-counts">좋은 해 {dc.goodYears} · 조율할 해 {dc.cautionYears}</span>
+              </div>
+              <span className={`ctag ctag-${dc.tag}`}>{dc.tag}</span>
+              <span className="cdecade-toggle">{isOpen ? '▲' : '▼'}</span>
+            </button>
+            <p className="cdecade-summary">{dc.summary}</p>
+            {isOpen && (
+              <div className="cdecade-years">
+                {dc.years.map((y) => (
+                  <div className="cyearrow" key={y.year}>
+                    <div className="cyearrow-head">
+                      <span className="cyearrow-year">{y.year}</span>
+                      <span className="cyearrow-gz">{y.ganZhi}({y.hangul})</span>
+                      <span className={`ctag ctag-${y.tag}`}>{y.tag}</span>
+                    </div>
+                    <p className="cyearrow-note">{y.note}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -60,6 +100,7 @@ export default function CompatView({
               {s.paras.map((p, i) => (
                 <p className="theme-para" key={i} dangerouslySetInnerHTML={{ __html: p }} />
               ))}
+              <p className="example">📌 {s.example}</p>
               <p className="basis">🔎 근거: {s.basis}</p>
             </div>
           ))}
@@ -93,25 +134,9 @@ export default function CompatView({
       <section id="sec-compat-timeline" className="card">
         <h2 className="section-title">시기별 궁합 흐름 <span className="hanja-sub">流年</span></h2>
         <p className="easy-note">
-          💡 쉽게 말하면 — 앞으로 몇 년간 <b>두 사람의 관계 기운</b>이 해마다 어떻게 흐르는지 봐요. (각자의 배우자 자리와 그해 기운의 어울림·부딪힘 기준)
+          💡 쉽게 말하면 — 앞으로의 관계 흐름을 <b>10년 단위로 요약</b>했어요. 각 카드를 누르면 그 10년의 <b>연도별 상세</b>가 펼쳐집니다. (배우자 자리와 그해 기운의 합·충 기준)
         </p>
-        <div className="cyear-list">
-          {compat.timeline.map((y) => (
-            <div className={y.isNow ? 'cyear now' : 'cyear'} key={y.year}>
-              <div className="cyear-head">
-                <span className="cyear-gzbadge" style={{ background: ELEMENT_COLOR[y.element] }}>{y.ganZhi}</span>
-                <div className="cyear-headtext">
-                  <span className="cyear-year">{y.year}{y.isNow ? ' · 올해' : ''}</span>
-                  <span className="cyear-gz">{y.ganZhi} ({y.hangul})</span>
-                </div>
-                <span className={`ctag ctag-${y.tag}`}>{y.tag}</span>
-              </div>
-              {y.paras.map((para, i) => (
-                <p className="cyear-note" key={i}>{para}</p>
-              ))}
-            </div>
-          ))}
-        </div>
+        <DecadeTimeline timeline={compat.timeline} />
       </section>
     </>
   )

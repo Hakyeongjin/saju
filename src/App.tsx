@@ -138,7 +138,7 @@ export default function App() {
             <PillarsTable result={reading.result} />
             <InterpretationView interp={reading.interp} result={reading.result} />
             <ShishenView analysis={reading.interp.shishen} />
-            <DaeunView daeun={reading.result.daeun} strengthLabel={reading.interp.strength.label} />
+            <DaeunView daeun={reading.result.daeun} dayMaster={reading.result.dayMaster} strengthLabel={reading.interp.strength.label} />
             <FortuneView dayMaster={reading.result.dayMaster} strengthLabel={reading.interp.strength.label} />
             <CareerView result={reading.result} interp={reading.interp} />
             <ThemeView result={reading.result} interp={reading.interp} />

@@ -11,6 +11,40 @@ import {
 } from './ganji'
 import { favorOf, SHISHEN_MEANING, type FavorTag, type StrengthAnalysis } from './interpret'
 
+export interface YearFortune {
+  year: number
+  ganZhi: string
+  hangul: string
+  shishen: string
+  tag: FavorTag
+  note: string
+}
+
+// 특정 해의 세운(歲運)을 개인 기준으로 계산 (대운 연도별 상세용)
+export function sewoonForYear(
+  dayMaster: Gan,
+  strength: StrengthAnalysis['label'],
+  year: number,
+): YearFortune {
+  const gz = Solar.fromYmd(year, 6, 1).getLunar().getYearInGanZhiByLiChun()
+  const gan = ganOf(gz.charAt(0))!
+  const ji = jiOf(gz.charAt(1))!
+  const shishen = shishenBetween(dayMaster, gan)
+  const jiMain = ganOf(ZHI_MAIN_GAN[ji.hanja])
+  const jiShishen = jiMain ? shishenBetween(dayMaster, jiMain) : ''
+  const favor = favorOf(SHISHEN_GROUP[shishen], strength)
+  const jiPart =
+    jiShishen && jiShishen !== shishen ? ` 바탕(지지)에는 ‘${jiShishen}’ 기운도 함께 흘러요.` : ''
+  return {
+    year,
+    ganZhi: gz,
+    hangul: `${gan.hangul}${ji.hangul}`,
+    shishen,
+    tag: favor.tag,
+    note: `천간에 ‘${shishen}’ 기운이 들어오는 해예요. ${SHISHEN_MEANING[shishen]}${jiPart} ${favor.text}`,
+  }
+}
+
 export interface FortunePeriod {
   title: string // "올해 세운" / "오늘의 일진"
   when: string // "2026년 · 丙午(병오)"

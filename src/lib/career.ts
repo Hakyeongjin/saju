@@ -68,6 +68,16 @@ const FLOW_THEME: Record<ShishenGroup, string> = {
   인성: '공부·자격·안정을 다지는',
 }
 
+// 직업 성향별 "쉬운 예시"
+export const CAREER_EXAMPLE: Record<string, string> = {
+  '조직형 · 안정 지향': '공무원·대기업 인사팀처럼 체계 안에서 차근차근 인정받는 커리어.',
+  '리더형 · 승부 지향': '영업 관리자·군경·스포츠 지도자처럼 사람을 이끌고 밀어붙이는 자리.',
+  '사업·재물형': '자영업·유통·투자처럼 성과가 곧 수입으로 이어지는 일.',
+  '전문·창작형': '디자이너·강사·크리에이터처럼 내 재능을 직접 펼치는 일.',
+  '학문·전문지식형': '연구원·교사·전문 자격직처럼 배움을 밑천으로 삼는 일.',
+  '독립·자영형': '1인 사업·프리랜서·전문직 개업처럼 내가 주도하는 일.',
+}
+
 export function analyzeCareer(
   result: SajuResult,
   interp: Interpretation,

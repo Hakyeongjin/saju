@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { analyzeCareer } from '../lib/career'
+import { analyzeCareer, CAREER_EXAMPLE } from '../lib/career'
 import type { SajuResult } from '../lib/saju'
 import type { Interpretation } from '../lib/interpret'
 
@@ -29,6 +29,7 @@ export default function CareerView({
           ))}
         </div>
         <p className="career-caution"><b className="neg">참고</b> {c.caution}</p>
+        <p className="example">📌 {CAREER_EXAMPLE[c.styleTitle]}</p>
       </div>
 
       <div className="career-flow">

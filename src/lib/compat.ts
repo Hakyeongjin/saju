@@ -38,6 +38,7 @@ export interface CompatSection {
   icon: string
   title: string
   paras: string[]
+  example: string // 상황별 예시
   basis: string
 }
 
@@ -54,10 +55,19 @@ export interface CoupleYear {
   year: number
   ganZhi: string
   hangul: string
-  element: Element // 천간 오행 (배지 색)
   tag: '좋음' | '무난' | '주의'
-  paras: string[] // 1~2문단
-  isNow: boolean
+  note: string // 한 줄 요약 (근거 포함)
+}
+
+export interface CoupleDecade {
+  startYear: number
+  endYear: number
+  tag: '좋음' | '무난' | '주의'
+  goodYears: number
+  cautionYears: number
+  summary: string // 10년 요약 (한 문단)
+  years: CoupleYear[] // 연도별 상세 (펼침용)
+  isNow: boolean // 현재 연도가 포함된 10년대
 }
 
 export interface CompatResult {
@@ -66,7 +76,7 @@ export interface CompatResult {
   summary: string
   sections: CompatSection[]
   fortune: { year: CouplePeriod; today: CouplePeriod }
-  timeline: CoupleYear[]
+  timeline: CoupleDecade[]
 }
 
 type OhaengRel = '상생' | '상극' | '비화'
@@ -148,6 +158,12 @@ export function analyzeCompat(
       icon: '🌳',
       title: '성향 궁합',
       paras,
+      example:
+        rel === '상생'
+          ? '서로 기운을 북돋우니, 힘든 일이 있을 때 상대에게 기대면 회복이 빨라요.'
+          : rel === '비화'
+            ? '비슷해서 잘 통하지만 같은 고집이 부딪히니, 한 명이 먼저 져주면 편해져요.'
+            : '티격태격이 매력이 되기도 하니, 예민한 날엔 한 발 물러서 주면 좋아요.',
       basis: `일간 — ${na} ${ael}(${ELEMENT_HANJA[ael]}) · ${nb} ${bel}(${ELEMENT_HANJA[bel]}) → ${rel} 관계`,
     })
   }
@@ -180,6 +196,15 @@ export function analyzeCompat(
       icon: '💑',
       title: '배우자 자리 (일지)',
       paras,
+      example: yuk
+        ? '함께 있을수록 편안해지는 사이니, 자주 붙어 지내면 정이 깊어져요.'
+        : aj === bj
+          ? '취향·생활 리듬이 닮아 말 안 해도 통하지만, 비슷한 만큼 같은 실수를 할 수 있으니 서로 챙겨주세요.'
+          : sameSamhap
+            ? '같은 목표를 향할 때 시너지가 크니, 함께 이루고 싶은 걸 정해보세요.'
+            : chung
+              ? '집에만 있으면 사소한 걸로 부딪히기 쉬우니, 여행처럼 새 자극을 함께 즐기면 오히려 좋아요.'
+              : '서로의 혼자만의 시간을 존중하면 오래 편안한 사이예요.',
       basis: `일지 — ${na} ${a.pillars.day.ji.hangul}(${aj}) · ${nb} ${b.pillars.day.ji.hangul}(${bj}) → ${yuk ? '육합' : chung ? '충' : sameSamhap ? '반합' : aj === bj ? '같은 글자' : '무관계'}`,
     })
   }
@@ -208,6 +233,10 @@ export function analyzeCompat(
       icon: '⚖️',
       title: '기운 보완 (오행)',
       paras,
+      example:
+        aFills.length || bFills.length
+          ? '한 명이 조급할 때 다른 한 명이 속도를 잡아주면 균형이 딱 맞아요.'
+          : '비슷한 성향이니, 부족한 부분은 함께 새 취미·습관으로 채워보세요.',
       basis: `${nb}가 채워줌: [${bFills.map((e) => e + ELEMENT_HANJA[e]).join('·') || '없음'}] · ${na}가 채워줌: [${aFills.map((e) => e + ELEMENT_HANJA[e]).join('·') || '없음'}]`,
     })
   }
@@ -231,6 +260,12 @@ export function analyzeCompat(
       icon: '💰',
       title: '재물 궁합',
       paras,
+      example:
+        ca['재성'] >= 2 || cb['재성'] >= 2
+          ? '재물 감각이 좋은 쪽이 공동 재정을 맡으면 시너지가 커져요.'
+          : ca['재성'] >= 1 && cb['재성'] >= 1
+            ? '맞벌이로 각자 벌어 공동 통장에 모으면 잘 불어나요.'
+            : '둘 다 알뜰형이니, 소비 규칙을 함께 정해두면 돈이 잘 모여요.',
       basis: `재성(재물의 별) — ${na} ${ca['재성']}개 · ${nb} ${cb['재성']}개`,
     })
   }
@@ -253,6 +288,9 @@ export function analyzeCompat(
       icon: '🌿',
       title: '건강 궁합',
       paras,
+      example: bothLack.length
+        ? `둘 다 약한 ${bothLack.map((e) => ELEMENT_ORGAN[e]).join('·')}는 함께 챙기며 관리하면 좋아요.`
+        : '같이 운동하거나 식단을 맞추면 서로 건강을 챙겨주기 좋아요.',
       basis: `두 사람 공통으로 약한 오행 [${bothLack.map((e) => e + ELEMENT_HANJA[e]).join('·') || '없음'}]`,
     })
   }
@@ -271,6 +309,10 @@ export function analyzeCompat(
       icon: '💼',
       title: '일·직장 궁합',
       paras,
+      example:
+        la === lb
+          ? `둘 다 ${la}이라 방향이 같으니, 역할을 나눠 경쟁 대신 협력하면 좋아요.`
+          : '서로 강점이 다르니, 큰 결정을 내릴 땐 각자의 시각을 합치면 실수가 줄어요.',
       basis: `직업 성향 — ${na} ${la} · ${nb} ${lb}`,
     })
   }
@@ -293,68 +335,68 @@ export function analyzeCompat(
       icon: '🤝',
       title: '대인관계·소통 궁합',
       paras,
+      example:
+        talkA && talkB
+          ? '대화가 잘 통하니, 서운한 건 그날 가볍게 말하고 넘기면 돼요.'
+          : '표현이 적은 편이니, 짧게라도 마음을 말로 전하는 습관이 오해를 줄여요.',
       basis: `식상(표현의 별) — ${na} ${ca['식상']}개 · ${nb} ${cb['식상']}개`,
     })
   }
 
-  // ── 시기별(연도별) 궁합 흐름 ──
+  // ── 시기별 궁합 흐름 (10년 단위 요약 + 연도별 상세) ──
   const ajFor = a.pillars.day.ji.hanja
   const bjFor = b.pillars.day.ji.hanja
   const nowY = now.getFullYear()
-  const timeline: CoupleYear[] = []
-  for (let k = 0; k < 8; k++) {
-    const y = nowY + k
+
+  // 특정 해의 두 사람 관계 기운 계산 (합·충 기준)
+  const scoreYear = (y: number): CoupleYear => {
     const gz = Solar.fromYmd(y, 6, 1).getLunar().getYearInGanZhiByLiChun()
     const zhi = gz.charAt(1)
+    const gan = ganOf(gz.charAt(0))
+    const ji = jiOf(zhi)
     let s = 0
     const ev: string[] = []
     const check = (name: string, pj: string) => {
       const pjH = jiOf(pj)?.hangul ?? pj
-      const zH = jiOf(zhi)?.hangul ?? zhi
-      if (YUKHAP.some(([x, yy]) => eqPair(zhi, pj, x, yy))) {
-        s += 2
-        ev.push(`${name} 일지 ${pjH}·${zH} 육합`)
-      } else if (SAMHAP.some((t) => t.includes(zhi) && t.includes(pj) && zhi !== pj)) {
-        s += 1
-      }
-      if (CHUNG.some(([x, yy]) => eqPair(zhi, pj, x, yy))) {
-        s -= 2
-        ev.push(`${name} 일지 ${pjH}·${zH} 충`)
-      }
+      const zH = ji?.hangul ?? zhi
+      if (YUKHAP.some(([x, yy]) => eqPair(zhi, pj, x, yy))) { s += 2; ev.push(`${name} 일지 ${pjH}·${zH} 육합`) }
+      else if (SAMHAP.some((t) => t.includes(zhi) && t.includes(pj) && zhi !== pj)) { s += 1 }
+      if (CHUNG.some(([x, yy]) => eqPair(zhi, pj, x, yy))) { s -= 2; ev.push(`${name} 일지 ${pjH}·${zH} 충`) }
     }
     check(na, ajFor)
     check(nb, bjFor)
     const tag: CoupleYear['tag'] = s >= 2 ? '좋음' : s <= -2 ? '주의' : '무난'
-    const gan = ganOf(gz.charAt(0))
-    const ji = jiOf(zhi)
-    const yearEl: Element = ji ? ji.element : '토'
     const evText = ev.length ? ` (${ev.join(', ')})` : ''
-    let p1: string
-    if (tag === '좋음') {
-      p1 = `${y}년(${gz})은 두 사람의 인연 자리(일지)가 서로 맞물리는 해예요.${evText} 관계가 한층 가까워지고 안정되는 흐름이라, 함께 중요한 일(여행·이사·약혼·결혼 등)을 도모하거나 관계를 한 단계 나아가게 하기 좋은 시기입니다.`
-    } else if (tag === '주의') {
-      p1 = `${y}년(${gz})은 배우자 자리가 흔들리기 쉬운 해예요.${evText} 사소한 일에도 감정이 부딪히거나 서로 예민해질 수 있으니, 큰 결정은 신중히 하고 대화는 한 박자 천천히 이어가는 게 좋습니다.`
-    } else {
-      p1 = ev.length
-        ? `${y}년(${gz})은 좋은 기운과 조율할 기운이 함께 있는 해예요.${evText} 어느 한쪽으로 크게 기울지 않으니, 서로의 리듬을 맞추면 무난하게 지나갑니다.`
-        : `${y}년(${gz})은 두 사람 사이에 뚜렷한 합도 충도 없이 잔잔하게 흐르는 해예요.`
-    }
-    const advice =
-      tag === '좋음'
-        ? '이 좋은 흐름을 놓치지 말고 함께 좋은 추억을 많이 만들어보세요.'
-        : tag === '주의'
-          ? '조심해서 지나가면 오히려 서로를 더 깊이 이해하게 되는 해가 될 수 있어요.'
-          : '큰 이벤트를 기대하기보다 일상의 소소한 다정함을 쌓기 좋은 때예요.'
-    const p2 = `그해에는 ${yearEl}(${ELEMENT_HANJA[yearEl]}) 기운이 흐르는 만큼, 관계에도 ${ELEMENT_YEAR_THEME[yearEl]}. ${advice}`
-    timeline.push({
-      year: y,
-      ganZhi: gz,
-      hangul: `${gan?.hangul ?? ''}${ji?.hangul ?? ''}`,
-      element: yearEl,
-      tag,
-      paras: [p1, p2],
-      isNow: k === 0,
-    })
+    const jiEl: Element = ji ? ji.element : '토'
+    let base: string
+    if (tag === '좋음') base = `두 사람의 인연 자리와 잘 맞물리는 해예요.${evText}`
+    else if (tag === '주의') base = `배우자 자리가 부딪히기 쉬워 서로 한 번 더 배려가 필요한 해예요.${evText}`
+    else base = ev.length ? `합과 충이 함께 섞여 있는 해예요.${evText}` : '두 사람 사이에 뚜렷한 합·충은 없는 해예요.'
+    const note = `${base} 그해엔 ${jiEl}(${ELEMENT_HANJA[jiEl]}) 기운이 흘러, 관계에도 ${ELEMENT_YEAR_THEME[jiEl]}.`
+    return { year: y, ganZhi: gz, hangul: `${gan?.hangul ?? ''}${ji?.hangul ?? ''}`, tag, note }
+  }
+
+  // 평생을 10년 단위로 (더 젊은 사람이 약 85세가 될 때까지)
+  const youngerAge = nowY - Math.max(a.input.year, b.input.year)
+  const nDecades = Math.min(7, Math.max(3, Math.ceil((85 - youngerAge) / 10)))
+  const timeline: CoupleDecade[] = []
+  for (let d = 0; d < nDecades; d++) {
+    const startYear = nowY + d * 10
+    const endYear = startYear + 9
+    const years: CoupleYear[] = []
+    for (let y = startYear; y <= endYear; y++) years.push(scoreYear(y))
+    const good = years.filter((y) => y.tag === '좋음').length
+    const caution = years.filter((y) => y.tag === '주의').length
+    const tag: CoupleDecade['tag'] = good > caution ? '좋음' : caution > good ? '주의' : '무난'
+    const vibe = tag === '좋음' ? '대체로 순조롭고 서로 가까워지기 좋은' : tag === '주의' ? '다소 부딪힘과 조율이 필요한' : '큰 굴곡 없이 잔잔한'
+    let summary = `${startYear}~${endYear}년은 두 사람에게 ${vibe} 10년이에요. 관계가 특히 잘 맞물리는 해가 ${good}번, 서로 배려가 필요한 해가 ${caution}번 들어 있어요.`
+    const goodList = years.filter((y) => y.tag === '좋음').map((y) => y.year)
+    const cautionList = years.filter((y) => y.tag === '주의').map((y) => y.year)
+    const hi: string[] = []
+    if (goodList.length) hi.push(`💛 좋은 해: ${goodList.join('·')}`)
+    if (cautionList.length) hi.push(`🌱 조율할 해: ${cautionList.join('·')}`)
+    if (hi.length) summary += ' ' + hi.join(' / ') + '.'
+    timeline.push({ startYear, endYear, tag, goodYears: good, cautionYears: caution, summary, years, isNow: d === 0 })
   }
 
   // ── 커플 올해·오늘 운세 (한 문단 코멘트) ──

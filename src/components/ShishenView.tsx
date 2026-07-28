@@ -57,7 +57,10 @@ export default function ShishenView({ analysis }: { analysis: ShishenAnalysis })
                 {s.name}
                 {s.count > 1 && <em> ×{s.count}</em>}
               </span>
-              <p>{s.text}</p>
+              <div className="ss-item-body">
+                <p>{s.text}</p>
+                <p className="example">📌 {s.example}</p>
+              </div>
             </div>
           ))}
         </div>

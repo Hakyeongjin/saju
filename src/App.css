@@ -1507,6 +1507,115 @@ html {
   text-align: center;
 }
 
+/* ── 10년 단위 카드 + 연도별 펼침 (궁합·대운 공용) ── */
+.cdecade-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cdecade {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+.cdecade.now {
+  border-color: var(--seal);
+  box-shadow: 0 0 0 2px rgba(178, 59, 50, 0.15);
+}
+.cdecade-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 15px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+}
+.cdecade-head:hover {
+  background: var(--paper-2);
+}
+.cdecade-headtext {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.cdecade-range {
+  font-weight: 700;
+  font-size: 15px;
+}
+.cdecade-counts {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.cdecade-toggle {
+  font-size: 11px;
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+.cdecade-summary {
+  padding: 0 15px 13px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.cdecade-years {
+  border-top: 1px dashed var(--line);
+  padding: 4px 15px 12px;
+  display: flex;
+  flex-direction: column;
+}
+.cyearrow {
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.cyearrow:last-child {
+  border-bottom: none;
+}
+.cyearrow-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+.cyearrow-year {
+  font-weight: 700;
+  font-size: 14px;
+}
+.cyearrow-gz {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.cyearrow-head .ctag {
+  margin-left: auto;
+}
+.cyearrow-note {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* ── 쉬운 예시 ── */
+.example {
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: #f4efe1;
+  border-radius: 8px;
+  padding: 8px 11px;
+  margin-top: 8px;
+  line-height: 1.55;
+}
+.ss-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
 /* ── 근거(이유) ── */
 .basis {
   font-size: 12px;

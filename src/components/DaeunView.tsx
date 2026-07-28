@@ -1,47 +1,21 @@
 import { useState } from 'react'
-import { ELEMENT_COLOR } from '../lib/ganji'
-import { daeunDetail, type PeriodReading } from '../lib/interpret'
-import type { DaeunInfo, Daeun } from '../lib/saju'
-
-function HalfReading({ label, years, reading }: { label: string; years: string; reading: PeriodReading }) {
-  return (
-    <div className="half">
-      <div className="half-head">
-        <span className="half-label">{label}</span>
-        <span className="half-years">{years}</span>
-        <span className={`favor favor-${reading.favor.tag}`}>{reading.favor.tag}</span>
-      </div>
-      <p className="half-shishen"><b>{reading.shishen}</b> · {reading.meaning}</p>
-      <p className="half-favor">{reading.favor.text}</p>
-    </div>
-  )
-}
-
-function Detail({ d, strengthLabel }: { d: Daeun; strengthLabel: '신강' | '신약' | '중화' }) {
-  const detail = daeunDetail(d, strengthLabel)
-  const mid = d.startYear + 5
-  return (
-    <div className="daeun-detail">
-      <h3 className="daeun-detail-title">
-        {d.startAge}세 대운 · {d.gan.hanja}{d.ji.hanja}
-        <span className="dd-sub">({d.gan.hangul}{d.ji.hangul} · {d.startYear}~{d.endYear})</span>
-      </h3>
-      <HalfReading label="전반 5년" years={`${d.startYear}~${mid - 1}`} reading={detail.ganHalf} />
-      <HalfReading label="후반 5년" years={`${mid}~${d.endYear}`} reading={detail.jiHalf} />
-    </div>
-  )
-}
+import { ELEMENT_COLOR, type Gan } from '../lib/ganji'
+import { daeunDetail } from '../lib/interpret'
+import { sewoonForYear } from '../lib/fortune'
+import type { DaeunInfo } from '../lib/saju'
 
 export default function DaeunView({
   daeun,
+  dayMaster,
   strengthLabel,
 }: {
   daeun: DaeunInfo
+  dayMaster: Gan
   strengthLabel: '신강' | '신약' | '중화'
 }) {
   const nowYear = new Date().getFullYear()
   const currentIdx = daeun.list.findIndex((d) => nowYear >= d.startYear && nowYear <= d.endYear)
-  const [sel, setSel] = useState<number>(currentIdx >= 0 ? currentIdx : 0)
+  const [open, setOpen] = useState<number>(currentIdx >= 0 ? currentIdx : 0)
 
   return (
     <section id="sec-daeun" className="card">
@@ -49,7 +23,7 @@ export default function DaeunView({
         대운 <span className="hanja-sub">大運 · 10년 운의 흐름</span>
       </h2>
       <p className="easy-note">
-        💡 쉽게 말하면 — <b>10년마다 바뀌는 큰 운의 흐름</b>이에요. 카드를 누르면 그 시기 풀이가 나와요.
+        💡 쉽게 말하면 — <b>10년마다 바뀌는 큰 운</b>이에요. 각 카드를 누르면 그 10년의 <b>연도별 세운(그해의 운)</b>이 펼쳐집니다.
       </p>
 
       <div className="daeun-meta">
@@ -57,29 +31,59 @@ export default function DaeunView({
         <span className="daeun-su">대운수 {daeun.startText}</span>
       </div>
 
-      <div className="daeun-track">
+      <div className="cdecade-list">
         {daeun.list.map((d, i) => {
           const isNow = i === currentIdx
-          const color = ELEMENT_COLOR[d.element]
-          const cls = `daeun-card${isNow ? ' now' : ''}${i === sel ? ' sel' : ''}`
+          const isOpen = open === i
+          const detail = daeunDetail(d, strengthLabel)
           return (
-            <button className={cls} key={d.startYear} onClick={() => setSel(i)}>
-              {isNow && <span className="daeun-now-tag">현재</span>}
-              <span className="daeun-age">{d.startAge}세~</span>
-              <span className="daeun-gz" style={{ background: color }}>
-                <span className="daeun-gan">{d.gan.hanja}</span>
-                <span className="daeun-ji">{d.ji.hanja}</span>
-              </span>
-              <span className="daeun-ko">{d.gan.hangul}{d.ji.hangul}</span>
-              <span className="daeun-ss" style={{ color }}>{d.shishen}</span>
-              <span className="daeun-year">{d.startYear}~{d.endYear}</span>
-            </button>
+            <div className={isNow ? 'cdecade now' : 'cdecade'} key={d.startYear}>
+              <button className="cdecade-head" onClick={() => setOpen(isOpen ? -1 : i)}>
+                <span className="cyear-gzbadge" style={{ background: ELEMENT_COLOR[d.element] }}>
+                  {d.gan.hanja}{d.ji.hanja}
+                </span>
+                <div className="cdecade-headtext">
+                  <span className="cdecade-range">
+                    {d.startAge}세~ · {d.gan.hangul}{d.ji.hangul}{isNow ? ' · 현재' : ''}
+                  </span>
+                  <span className="cdecade-counts">
+                    {d.startYear}~{d.endYear} · 전반 {d.shishen} / 후반 {d.jiShishen}
+                  </span>
+                </div>
+                <span className="cdecade-toggle">{isOpen ? '▲' : '▼'}</span>
+              </button>
+              <div className="cdecade-summary">
+                <p>
+                  <b>전반 5년 · {detail.ganHalf.shishen}</b>{' '}
+                  <span className={`favor favor-${detail.ganHalf.favor.tag}`}>{detail.ganHalf.favor.tag}</span>
+                  {' — '}{detail.ganHalf.favor.text}
+                </p>
+                <p style={{ marginTop: '6px' }}>
+                  <b>후반 5년 · {detail.jiHalf.shishen}</b>{' '}
+                  <span className={`favor favor-${detail.jiHalf.favor.tag}`}>{detail.jiHalf.favor.tag}</span>
+                  {' — '}{detail.jiHalf.favor.text}
+                </p>
+              </div>
+              {isOpen && (
+                <div className="cdecade-years">
+                  {Array.from({ length: d.endYear - d.startYear + 1 }, (_, k) =>
+                    sewoonForYear(dayMaster, strengthLabel, d.startYear + k),
+                  ).map((y) => (
+                    <div className="cyearrow" key={y.year}>
+                      <div className="cyearrow-head">
+                        <span className="cyearrow-year">{y.year}</span>
+                        <span className="cyearrow-gz">{y.ganZhi}({y.hangul}) · {y.shishen}</span>
+                        <span className={`favor favor-${y.tag}`}>{y.tag}</span>
+                      </div>
+                      <p className="cyearrow-note">{y.note}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           )
         })}
       </div>
-      <p className="table-note">카드를 누르면 그 시기의 상세 풀이가 보입니다. (좌우로 넘겨보세요 →)</p>
-
-      {daeun.list[sel] && <Detail d={daeun.list[sel]} strengthLabel={strengthLabel} />}
     </section>
   )
 }

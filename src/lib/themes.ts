@@ -6,6 +6,7 @@ export interface ThemeReading {
   icon: string
   title: string
   paras: string[] // 1~2문단
+  example: string // 상황별 예시
   basis: string // 판단 근거
 }
 
@@ -58,6 +59,12 @@ export function analyzeThemes(result: SajuResult, interp: Interpretation): Theme
       icon: '💗',
       title: '연애·결혼운',
       paras,
+      example:
+        cnt >= 2
+          ? '인연이 자주 생기는 편이라, 좋은 사람인지 천천히 살펴보는 여유가 오히려 도움이 돼요.'
+          : cnt === 1
+            ? '서두르지 않아도 때가 되면 자연스러운 인연이 찾아와요.'
+            : '인연이 늦게 오는 편이니, 마음에 드는 사람에겐 내가 먼저 다가가 보세요.',
       basis: `${male ? '남자라 이성·배우자의 별은 재성' : '여자라 이성·배우자의 별은 관성'} — ${starName} ${cnt}개 (안정형 ${jeong} · 자유형 ${pyeon})`,
     })
   }
@@ -90,6 +97,12 @@ export function analyzeThemes(result: SajuResult, interp: Interpretation): Theme
       icon: '💰',
       title: '재물운',
       paras,
+      example:
+        jae >= 2
+          ? '재물 기회가 왔을 때 감당할 그릇이 있으니, 좋은 기회는 과감히 잡아보세요.'
+          : jae >= 1
+            ? '무리한 한 방보다 버는 만큼 꾸준히 모으면 착실히 불어나요.'
+            : '큰 욕심보다 매달 자동저축부터 시작하는 게 당신에겐 정답이에요.',
       basis: `재물의 별(재성) ${jae}개, 일간의 힘 ‘${strong}’ 기준`,
     })
   }
@@ -118,6 +131,11 @@ export function analyzeThemes(result: SajuResult, interp: Interpretation): Theme
       icon: '🌿',
       title: '건강운',
       paras,
+      example: lacking.length
+        ? `${lacking.map((e) => ELEMENT_ORGAN[e]).join('·')} 쪽이 약할 수 있으니, 과로·과음을 피하고 그 부위를 따뜻하게 관리하세요.`
+        : excess.length
+          ? `${excess.map((e) => ELEMENT_ORGAN[e]).join('·')}에 열·무리가 쌓이기 쉬우니, 스트레스를 그때그때 풀어주세요.`
+          : '큰 약점이 없으니 규칙적인 수면·식사만 지켜도 건강이 잘 유지돼요.',
       basis: `오행 과다 [${excess.map((e) => e + ELEMENT_HANJA[e]).join('·') || '없음'}] · 부족 [${lacking.map((e) => e + ELEMENT_HANJA[e]).join('·') || '없음'}]`,
     })
   }
@@ -140,6 +158,10 @@ export function analyzeThemes(result: SajuResult, interp: Interpretation): Theme
       icon: '📚',
       title: '학업·시험운',
       paras,
+      example:
+        gc['인성'] >= 1
+          ? '자격증·시험처럼 목표가 뚜렷한 공부가 잘 맞으니, 계획표대로 꾸준히 준비해요.'
+          : '이론 암기보다 실습·프로젝트로 부딪히며 배우면 훨씬 빨리 흡수해요.',
       basis: `인성(공부의 별) ${gc['인성']}개 · 관성(합격의 별) ${gc['관성']}개 · 식상 ${gc['식상']}개 기준`,
     })
   }
@@ -162,6 +184,12 @@ export function analyzeThemes(result: SajuResult, interp: Interpretation): Theme
       icon: '🤝',
       title: '대인관계운',
       paras,
+      example:
+        gc['비겁'] >= 2
+          ? '친구가 많은 만큼, 돈 거래·보증은 아무리 친해도 문서로 분명히 하세요.'
+          : gc['비겁'] === 0
+            ? '넓게보다 소수와 깊게 사귀는 편이니, 소중한 몇 명에게 정성을 쏟으면 돼요.'
+            : '먼저 안부를 챙기고 다가가면 관계가 한결 단단해져요.',
       basis: `비겁(동료의 별) ${gc['비겁']}개 · 식상(표현의 별) ${gc['식상']}개 · 인성 ${gc['인성']}개 기준`,
     })
   }

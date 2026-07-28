@@ -1,5 +1,5 @@
 import { ELEMENT_COLOR } from '../lib/ganji'
-import type { Interpretation } from '../lib/interpret'
+import { DAY_MASTER_EXAMPLE, type Interpretation } from '../lib/interpret'
 import type { SajuResult } from '../lib/saju'
 
 function OhaengChart({ interp }: { interp: Interpretation }) {
@@ -65,6 +65,7 @@ export default function InterpretationView({
           </div>
         </div>
         <p className="dm-overview">{dm.overview}</p>
+        <p className="example">📌 이런 사람이에요 — {DAY_MASTER_EXAMPLE[result.dayMaster.hanja]}</p>
         <div className="dm-detail">
           <p><b className="pos">강점</b> {dm.strength}</p>
           <p><b className="neg">주의</b> {dm.caution}</p>

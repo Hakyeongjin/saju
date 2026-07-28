@@ -28,6 +28,7 @@ export default function ThemeView({
             {t.paras.map((p, i) => (
               <p className="theme-para" key={i} dangerouslySetInnerHTML={{ __html: p }} />
             ))}
+            <p className="example">📌 {t.example}</p>
             <p className="basis">🔎 근거: {t.basis}</p>
           </div>
         ))}
