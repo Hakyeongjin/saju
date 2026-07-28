@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import type { SajuInput, Calendar, Gender } from '../lib/saju'
+import { isValidSolarDate, type SajuInput, type Calendar, type Gender } from '../lib/saju'
 
 interface Props {
   onSubmit: (input: SajuInput, name: string) => void
 }
 
-const currentYear = 2026
+const currentYear = new Date().getFullYear()
 
 export default function InputForm({ onSubmit }: Props) {
   const [name, setName] = useState('')
@@ -16,6 +16,7 @@ export default function InputForm({ onSubmit }: Props) {
   const [day, setDay] = useState('1')
   const [unknownTime, setUnknownTime] = useState(false)
   const [time, setTime] = useState('12:00')
+  const [trueSolar, setTrueSolar] = useState(false)
   const [gender, setGender] = useState<Gender>('남')
   const [error, setError] = useState('')
 
@@ -36,6 +37,10 @@ export default function InputForm({ onSubmit }: Props) {
       setError('일을 1 ~ 31 사이로 입력해 주세요.')
       return
     }
+    if (calendar === '양력' && !isValidSolarDate(y, m, d)) {
+      setError('존재하지 않는 날짜예요. 날짜를 다시 확인해 주세요.')
+      return
+    }
     const [hh, mm] = time.split(':').map((v) => parseInt(v, 10))
     setError('')
     onSubmit(
@@ -48,6 +53,7 @@ export default function InputForm({ onSubmit }: Props) {
         calendar,
         isLeapMonth: calendar === '음력' && isLeapMonth,
         unknownTime,
+        trueSolar,
         gender,
       },
       name.trim(),
@@ -125,6 +131,16 @@ export default function InputForm({ onSubmit }: Props) {
           </label>
         </div>
         {unknownTime && <p className="hint">시주(時柱)를 제외하고 나머지로만 풀이합니다.</p>}
+        {!unknownTime && (
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={trueSolar}
+              onChange={(e) => setTrueSolar(e.target.checked)}
+            />
+            진태양시 보정 <em style={{ fontStyle: 'normal', opacity: 0.7 }}>(한국 기준 약 −32분, 시주 정확도↑)</em>
+          </label>
+        )}
       </div>
 
       <div className="field">

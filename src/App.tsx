@@ -50,20 +50,31 @@ export default function App() {
   const [reading, setReading] = useState<Reading | null>(null)
   const [couple, setCouple] = useState<CoupleReading | null>(null)
   const [showShare, setShowShare] = useState(false)
+  const [formError, setFormError] = useState('')
 
   function handleSingle(input: SajuInput, name: string) {
-    const result = computeSaju(input)
-    setReading({ result, interp: interpret(result), name })
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    try {
+      const result = computeSaju(input)
+      setReading({ result, interp: interpret(result), name })
+      setFormError('')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch {
+      setFormError('사주를 계산할 수 없는 날짜예요. 음력·윤달·날짜를 다시 확인해 주세요.')
+    }
   }
 
   function handleCouple(inputA: SajuInput, nameA: string, inputB: SajuInput, nameB: string) {
-    const a = computeSaju(inputA)
-    const ia = interpret(a)
-    const b = computeSaju(inputB)
-    const ib = interpret(b)
-    setCouple({ a, b, compat: analyzeCompat(a, ia, b, ib, nameA, nameB, new Date()), nameA, nameB })
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    try {
+      const a = computeSaju(inputA)
+      const ia = interpret(a)
+      const b = computeSaju(inputB)
+      const ib = interpret(b)
+      setCouple({ a, b, compat: analyzeCompat(a, ia, b, ib, nameA, nameB, new Date()), nameA, nameB })
+      setFormError('')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch {
+      setFormError('궁합을 계산할 수 없는 날짜예요. 두 사람의 음력·윤달·날짜를 다시 확인해 주세요.')
+    }
   }
 
   function restart(nextMode?: Mode) {
@@ -93,12 +104,13 @@ export default function App() {
                 <button
                   key={m}
                   className={mode === m ? 'mode-btn active' : 'mode-btn'}
-                  onClick={() => setMode(m)}
+                  onClick={() => { setMode(m); setFormError('') }}
                 >
                   {m === 'single' ? '내 사주' : '궁합'}
                 </button>
               ))}
             </div>
+            {formError && <p className="form-error-banner">⚠️ {formError}</p>}
             {mode === 'single' ? (
               <InputForm onSubmit={handleSingle} />
             ) : (

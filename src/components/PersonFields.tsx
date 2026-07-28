@@ -9,6 +9,7 @@ export interface PersonState {
   day: string
   unknownTime: boolean
   time: string
+  trueSolar: boolean
   gender: Gender
 }
 
@@ -22,11 +23,12 @@ export function makePerson(gender: Gender): PersonState {
     day: '1',
     unknownTime: false,
     time: '12:00',
+    trueSolar: false,
     gender,
   }
 }
 
-const currentYear = 2026
+const currentYear = new Date().getFullYear()
 
 interface Props {
   value: PersonState
@@ -105,6 +107,16 @@ export default function PersonFields({ value: p, onChange, namePlaceholder }: Pr
             시간 모름
           </label>
         </div>
+        {!p.unknownTime && (
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={p.trueSolar}
+              onChange={(e) => onChange({ trueSolar: e.target.checked })}
+            />
+            진태양시 보정 <em style={{ fontStyle: 'normal', opacity: 0.7 }}>(약 −32분)</em>
+          </label>
+        )}
       </div>
 
       <div className="field">

@@ -1494,6 +1494,19 @@ html {
   background: #9c322a;
 }
 
+/* ── 입력 에러 배너 ── */
+.form-error-banner {
+  background: rgba(178, 59, 50, 0.1);
+  border: 1px solid var(--seal);
+  color: var(--seal);
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
 /* ── 근거(이유) ── */
 .basis {
   font-size: 12px;

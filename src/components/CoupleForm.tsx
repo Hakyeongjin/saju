@@ -1,18 +1,20 @@
 import { useState } from 'react'
 import PersonFields, { makePerson, type PersonState } from './PersonFields'
-import type { SajuInput } from '../lib/saju'
+import { isValidSolarDate, type SajuInput } from '../lib/saju'
 
 interface Props {
   onSubmit: (inputA: SajuInput, nameA: string, inputB: SajuInput, nameB: string) => void
 }
 
 function toInput(p: PersonState): { input?: SajuInput; error?: string } {
+  const cy = new Date().getFullYear()
   const y = parseInt(p.year, 10)
   const m = parseInt(p.month, 10)
   const d = parseInt(p.day, 10)
-  if (!y || y < 1900 || y > 2026) return { error: '연도를 1900~2026 사이로 입력해 주세요.' }
+  if (!y || y < 1900 || y > cy) return { error: `연도를 1900~${cy} 사이로 입력해 주세요.` }
   if (!m || m < 1 || m > 12) return { error: '월을 1~12 사이로 입력해 주세요.' }
   if (!d || d < 1 || d > 31) return { error: '일을 1~31 사이로 입력해 주세요.' }
+  if (p.calendar === '양력' && !isValidSolarDate(y, m, d)) return { error: '존재하지 않는 날짜예요. 날짜를 다시 확인해 주세요.' }
   const [hh, mm] = p.time.split(':').map((v) => parseInt(v, 10))
   return {
     input: {
@@ -22,6 +24,7 @@ function toInput(p: PersonState): { input?: SajuInput; error?: string } {
       calendar: p.calendar,
       isLeapMonth: p.calendar === '음력' && p.isLeapMonth,
       unknownTime: p.unknownTime,
+      trueSolar: p.trueSolar,
       gender: p.gender,
     },
   }

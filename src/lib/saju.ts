@@ -23,6 +23,7 @@ export interface SajuInput {
   calendar: Calendar
   isLeapMonth: boolean // 음력 윤달 여부
   unknownTime: boolean
+  trueSolar: boolean // 진태양시(경도) 보정 여부
   gender: Gender
 }
 
@@ -90,6 +91,12 @@ function makePillar(
   }
 }
 
+// 양력 날짜가 실제로 존재하는지 검증 (2월 30일 등 방지)
+export function isValidSolarDate(year: number, month: number, day: number): boolean {
+  const dt = new Date(year, month - 1, day)
+  return dt.getFullYear() === year && dt.getMonth() === month - 1 && dt.getDate() === day
+}
+
 export function computeSaju(input: SajuInput): SajuResult {
   const { year, month, day, calendar, isLeapMonth, unknownTime } = input
   // 시간 모름이면 계산용으로 정오(12시)를 쓰되 시주는 결과에서 제외한다.
@@ -107,7 +114,23 @@ export function computeSaju(input: SajuInput): SajuResult {
     solar = lunar.getSolar()
   }
 
-  const ec = lunar.getEightChar()
+  // 진태양시(眞太陽時) 보정: 표준시(동경 135°) → 한국 실제 경도(서울 약 126.98°E, ≈ -32분).
+  // 시주 정확도를 위해 팔자 계산에만 적용하고, 표시용 날짜(solar/lunar)는 원래 입력을 유지한다.
+  let calcLunar = lunar
+  if (input.trueSolar && !unknownTime) {
+    const CORR_MIN = 32
+    const adj = new Date(
+      solar.getYear(), solar.getMonth() - 1, solar.getDay(),
+      solar.getHour(), solar.getMinute(),
+    )
+    adj.setMinutes(adj.getMinutes() - CORR_MIN)
+    calcLunar = Solar.fromYmdHms(
+      adj.getFullYear(), adj.getMonth() + 1, adj.getDate(),
+      adj.getHours(), adj.getMinutes(), 0,
+    ).getLunar()
+  }
+
+  const ec = calcLunar.getEightChar()
 
   const yearPillar = makePillar('년주', ec.getYear(), ec.getYearShiShenGan(), ec.getYearHideGan())
   const monthPillar = makePillar('월주', ec.getMonth(), ec.getMonthShiShenGan(), ec.getMonthHideGan())
