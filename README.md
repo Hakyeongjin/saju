@@ -1,32 +1,51 @@
-# React + TypeScript + Vite
+# 命 정통 사주
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+생년월일시로 보는 **정통 명리학** 웹앱입니다. AI 없이 만세력 계산과 명리 이론만으로 사주팔자·오행·십신·대운부터 궁합까지 풀이합니다.
 
-Currently, two official plugins are available:
+**🔮 데모: https://hakyeongjin.github.io/saju/**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 기능
 
-## React Compiler
+### 내 사주
+- **사주팔자** — 년·월·일·시 4기둥 (천간·지지, 오행 색상, 십신, 지장간)
+- **나의 기질** — 일간 기반 성격 + 쉬운 설명과 예시
+- **오행 분포** — 목·화·토·금·수 균형, 신강/신약(억부) 판정
+- **십신 분석** — 비겁·식상·재성·관성·인성 5분류
+- **대운** — 10년 단위 요약, 카드를 누르면 연도별 세운(그해 운) 상세
+- **올해·오늘 운세** — 세운·일진
+- **직장운·적성**, **테마별 운세** (연애·재물·건강·학업·대인)
+- **합·충 심화** — 원국·세운·대운
+- 목차(바로가기), 결과 이미지 저장/공유, 진태양시 보정 옵션
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 궁합
+- 두 사람 사주 비교 → 궁합 점수·등급
+- 7분야 풀이 (성향·배우자 자리·기운 보완·재물·건강·일·대인)
+- 올해·오늘 커플 운세, 시기별(10년 단위) 흐름 + 연도별 상세
+- 각 풀이에 근거(십신·오행·합충)와 상황별 예시
 
-## Expanding the Oxlint configuration
+## 기술 스택
+- **Vite + React + TypeScript** (정적 SPA, 백엔드 없음)
+- 만세력/사주 계산: [lunar-typescript](https://github.com/6tail/lunar-typescript)
+- 결과 이미지 저장/공유: [html-to-image](https://github.com/bubkoo/html-to-image)
+- 배포: GitHub Pages (GitHub Actions 자동 배포)
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 로컬 실행
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev      # http://localhost:5173
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 빌드
+
+```bash
+npm run build    # dist/ 에 정적 파일 생성
+```
+
+## 배포
+
+`main` 브랜치에 push하면 GitHub Actions(`.github/workflows/deploy.yml`)가 자동으로 빌드·배포합니다.
+
+## 참고
+
+※ 정통 명리학 이론에 따른 **참고용** 풀이입니다. 자시(子時) 경계 등 유파에 따라 해석이 달라질 수 있으니 재미로 즐겨주세요. 🙂
