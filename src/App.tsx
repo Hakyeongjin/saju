@@ -66,9 +66,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  function reset() {
+  function restart(nextMode?: Mode) {
+    if (nextMode) setMode(nextMode)
     setReading(null)
     setCouple(null)
+    setShowShare(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const hasResult = reading || couple
@@ -116,7 +119,7 @@ export default function App() {
               </div>
               <div className="summary-btns">
                 <button className="reset-btn accent" onClick={() => setShowShare(true)}>저장·공유</button>
-                <button className="reset-btn" onClick={reset}>다시 입력</button>
+                <button className="reset-btn" onClick={() => restart()}>다시 입력</button>
               </div>
             </div>
             <Toc items={SINGLE_TOC} />
@@ -131,6 +134,13 @@ export default function App() {
             <p className="disclaimer">
               ※ 정통 명리학 이론에 따른 참고용 풀이입니다. 자시(子時) 경계 등 유파에 따라 해석이 달라질 수 있습니다.
             </p>
+            <nav className="result-nav">
+              <p className="result-nav-title">다른 것도 볼까요?</p>
+              <div className="result-nav-btns">
+                <button className="nav-link-btn primary" onClick={() => restart('couple')}>💞 궁합 보기</button>
+                <button className="nav-link-btn" onClick={() => restart()}>🏠 처음 화면으로</button>
+              </div>
+            </nav>
             {showShare && (
               <ShareModal
                 result={reading.result}
@@ -151,7 +161,7 @@ export default function App() {
                   {(couple.nameA || '나')} ({couple.a.input.year}) · {(couple.nameB || '상대')} ({couple.b.input.year})
                 </div>
               </div>
-              <button className="reset-btn" onClick={reset}>다시 입력</button>
+              <button className="reset-btn" onClick={() => restart()}>다시 입력</button>
             </div>
             <Toc
               items={[
@@ -171,6 +181,13 @@ export default function App() {
             <p className="disclaimer">
               ※ 정통 명리학 이론에 따른 참고용 궁합 풀이입니다. 재미로 즐겨주세요 🙂
             </p>
+            <nav className="result-nav">
+              <p className="result-nav-title">다른 것도 볼까요?</p>
+              <div className="result-nav-btns">
+                <button className="nav-link-btn primary" onClick={() => restart('single')}>🔮 내 사주 보기</button>
+                <button className="nav-link-btn" onClick={() => restart()}>🏠 처음 화면으로</button>
+              </div>
+            </nav>
           </>
         )}
       </main>

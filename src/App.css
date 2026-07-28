@@ -1455,6 +1455,45 @@ html {
   margin-top: 8px;
 }
 
+/* ── 결과 하단 내비게이션 ── */
+.result-nav {
+  text-align: center;
+  padding: 18px 0 8px;
+}
+.result-nav-title {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+.result-nav-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.nav-link-btn {
+  padding: 12px 22px;
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.nav-link-btn:hover {
+  background: var(--paper-2);
+}
+.nav-link-btn.primary {
+  background: var(--seal);
+  color: #fff;
+  border-color: var(--seal);
+}
+.nav-link-btn.primary:hover {
+  background: #9c322a;
+}
+
 /* ── 근거(이유) ── */
 .basis {
   font-size: 12px;
